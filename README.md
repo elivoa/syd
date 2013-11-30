@@ -1,0 +1,4 @@
+syd
+===
+
+ShinineDayManager
