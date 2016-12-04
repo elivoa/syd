@@ -1,0 +1,28 @@
+#!/bin/sh
+
+echo "-----------------------------------------------------------"
+echo "-- Starting XDL Framework 1.0                            --"
+echo "-- Author: Bo Gao (elivoa@gmail.com)                     --"
+echo "-----------------------------------------------------------"
+
+echo "> Remove build folder:\b"
+rm -rf ~/go/pkg/linux_amd64/github.com/elivoa/got
+rm -rf ~/go/pkg/linux_amd64/elivoa/carfilm
+rm -rf ~/develop/go/pkg/darwin_amd64/elivoa/carfilm.a
+
+echo "> go install github.com/elivoa/gxl..."
+go install github.com/elivoa/gxl
+
+echo "> go install github.com/elivoa/got..."
+go install github.com/elivoa/got
+
+echo "> go install carfilm"
+go install elivoa/carfilm
+
+# How to generate all components and pages package to build.
+echo "> go install generated; to build all pages."
+go install elivoa/carfilm/generated
+
+echo "> Run Application..."
+
+go run main/start-carfilm.go
