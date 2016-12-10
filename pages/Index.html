@@ -1,16 +1,18 @@
 <!DOCTYPE HTML>
 <html>
-  <head>
-    <t:layout.header title="print .UserToken.Name `, ` .UserToken.Role ` From ` .UserToken.Store" />
-  </head>
+  <head></head>
   <body class="PG_list_person">
-    <t:layout.headernav />
+
+
+
     <div class="container">
-      <t:layout.leftnav curpage="/" />
+
 
       <div class="main_content">
-    	<h1>Welcome, {{.UserToken.Name}}</h1>
+    	<h1>SYD Platform Service Running...</h1>
+        Welcome, { {.UserToken.Name}}
 
+        <a href="/auth/test/test">OAuth Account Login</a>
 
       </div>
       

@@ -7,8 +7,7 @@ echo "-----------------------------------------------------------"
 
 echo "> Remove build folder:\b"
 rm -rf ~/go/pkg/linux_amd64/github.com/elivoa/got
-rm -rf ~/go/pkg/linux_amd64/elivoa/carfilm
-rm -rf ~/develop/go/pkg/darwin_amd64/elivoa/carfilm.a
+rm -rf ~/go/pkg/linux_amd64/github.com/elivoa/syd
 
 echo "> go install github.com/elivoa/gxl..."
 go install github.com/elivoa/gxl
@@ -16,13 +15,13 @@ go install github.com/elivoa/gxl
 echo "> go install github.com/elivoa/got..."
 go install github.com/elivoa/got
 
-echo "> go install carfilm"
-go install elivoa/carfilm
+echo "> go install syd"
+rm -rf ~/go/pkg/linux_amd64/github.com/elivoa/syd
 
 # How to generate all components and pages package to build.
 echo "> go install generated; to build all pages."
-go install elivoa/carfilm/generated
+go install github.com/elivoa/syd/generated
 
 echo "> Run Application..."
 
-go run main/start-carfilm.go
+go run ../main/start.go

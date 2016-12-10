@@ -1,9 +1,8 @@
 package index
 
 import (
-	"elivoa/carfilm/model"
-	"elivoa/carfilm/service"
 	"github.com/elivoa/got/core"
+	"github.com/elivoa/syd/model"
 )
 
 // _______________________________________________________________________________
@@ -18,7 +17,7 @@ type Index struct {
 }
 
 func (p *Index) SetupRender() {
-	p.UserToken = service.User.RequireLogin(p.W, p.R)
+	// p.UserToken = service.User.RequireLogin(p.W, p.R)
 
 }
 

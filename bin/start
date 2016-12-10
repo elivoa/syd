@@ -12,11 +12,9 @@ echo "> Remove build folder:\b (WORK_FOLDER: [$WORK_FOLDER] )"
 # rm -rf $WORK_FOLDER/github.com/elivoa/got
 rm -rf $WORK_FOLDER/github.com/elivoa/syd
 
-# echo "> go install github.com/elivoa/gxl..."
+# echo "> go install dependencies...gxl,got,syd"
 go install github.com/elivoa/gxl
-# echo "> go install github.com/elivoa/got..."
 go install github.com/elivoa/got
-# echo "> go install carfilm"
 go install github.com/elivoa/syd
 
 # How to generate all components and pages package to build.

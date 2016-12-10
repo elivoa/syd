@@ -25,7 +25,7 @@ func main() {
 		defer pprof.StopCPUProfile()
 	}
 
-	fmt.Println("\n >> start carfilm project <<")
+	fmt.Println("\n >> start syd project <<")
 	config.Config.RegisterModule(syd.Module)
 	got.BuildStart()
 }
