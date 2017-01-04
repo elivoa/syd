@@ -1,13 +1,13 @@
+// TODO move Preference Index page into The Great Extended Library Project.
 package preference
 
 import (
-	"elivoa/carfilm"
-	"elivoa/carfilm/dal/constdao"
-	"elivoa/carfilm/model"
-	"elivoa/carfilm/service"
 	"fmt"
 	"github.com/elivoa/got/core"
 	"strings"
+	"github.com/elivoa/syd/dal/constdao"
+	"github.com/elivoa/syd/model"
+	"github.com/elivoa/syd/service"
 )
 
 type PreferenceIndex struct {
@@ -32,9 +32,9 @@ type PreferenceIndex struct {
 }
 
 func (p *PreferenceIndex) Activate() {
-	service.User.RequireRole(p.W, p.R, carfilm.RoleSet_Management...)
+	// service.User.RequireRole(p.W, p.R, carfilm.RoleSet_Management...)
 	if p.Tab == "" {
-		p.Tab = "today" // default go in toprint
+		p.Tab = "system" // default go in toprint
 	}
 }
 
@@ -60,7 +60,7 @@ func (p *PreferenceIndex) TabStyle(tab string) string {
 }
 
 func (p *PreferenceIndex) OnSuccessFromCreateConstForm() /* *exit.Exit  */ {
-	service.User.RequireRole(p.W, p.R, carfilm.RoleSet_Management...)
+	// service.User.RequireRole(p.W, p.R, carfilm.RoleSet_Management...)
 
 	if p.Const.Id > 0 {
 		// update by id
@@ -69,7 +69,6 @@ func (p *PreferenceIndex) OnSuccessFromCreateConstForm() /* *exit.Exit  */ {
 			panic(err)
 		}
 	} else {
-
 		if err := service.Const.Set(p.Const.Name, p.Const.Key, p.Const.Value, p.Const.FloatValue); err != nil {
 			panic(err)
 		}

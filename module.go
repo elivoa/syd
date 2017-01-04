@@ -1,12 +1,14 @@
 package syd
 
 import (
+	"encoding/gob"
 	"github.com/elivoa/got/config"
 	"github.com/elivoa/got/core"
 	"github.com/elivoa/got/core/exception"
 	"github.com/elivoa/got/errorhandler"
 	"github.com/elivoa/got/utils"
 	"github.com/elivoa/gxl"
+	"github.com/elivoa/syd/model"
 	"reflect"
 )
 
@@ -23,14 +25,10 @@ var Module = &core.Module{
 		// settings
 		c := config.Config
 
-		// config static resources
-		// c.AddStaticResource("/pictures/", "/var/site/data/syd/pictures/")
+		c.Port = 8880                                             // Set Host Port
+		c.SetDBInfo(3306, "sydplatform", "root", "eserver409$)(") // Set DB Connection Info
+
 		c.AddStaticResource("/static/", "static/") // TODO: test this, is this works now?
-
-		c.Port = 8880
-		c.SetDBInfo(3306, "sydplatform", "root", "eserver409$)(")
-
-		gxl.Locale = gxl.CN
 
 		// builtin functions
 		// templates.RegisterFunc("HasAnyRole", HasAnyRole)
@@ -38,19 +36,27 @@ var Module = &core.Module{
 		// errorhandlers
 		errorhandler.AddHandler("LoginError",
 			reflect.TypeOf(LoginError{}),
-			errorhandler.RedirectHandler("/account/login"),
+			errorhandler.RedirectHandler("/auth/login"),
 		)
 		errorhandler.AddHandler("TimeZoneNotFoundError",
 			reflect.TypeOf(exception.TimeZoneNotFoundError{}),
-			errorhandler.RedirectHandler("/account/login"),
+			errorhandler.RedirectHandler("/auth/login"),
 		)
 
-		// errorhandler.AddHandler("AccessDenied",
-		// 	reflect.TypeOf(AccessDeniedError{}),
-		// 	errorhandler.HandleAccessDeniedError,
-		// )
+		errorhandler.AddHandler("AccessDenied",
+			reflect.TypeOf(AccessDeniedError{}),
+			errorhandler.HandleAccessDeniedError,
+		)
 
+		// System Config
 		config.ReloadTemplate = true // disable reload template?
+
+		// Config 3rd party libraries.
+		gxl.Locale = gxl.CN
+
+		// Register gob
+		gob.Register(&model.UserToken{})
+
 	},
 }
 

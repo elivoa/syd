@@ -1,8 +1,10 @@
 package auth
 
 import (
+	"fmt"
 	"github.com/elivoa/got/builtin/services"
 	"github.com/elivoa/got/core"
+	"github.com/elivoa/got/route"
 	"github.com/elivoa/got/route/exit"
 	"github.com/elivoa/syd/model"
 	"github.com/elivoa/syd/service"
@@ -10,8 +12,12 @@ import (
 
 type Login struct {
 	core.Page
-	Title string
 
+	Referer string `query:"referer"` // return here if non-empty
+
+	// old things.
+	//
+	Title       string
 	LoginUser   *model.User
 	FormMessage string // `scope:"flash"` //
 	FormError   string `query:"errmsg"` // use query to immulate Flash message.
@@ -53,9 +59,14 @@ func (p *Login) OnSuccessFromLoginForm() *exit.Exit {
 	}
 }
 
-// TODO: Should be moved to common place.
-// func (p *AccountLogin) OnSetTimeZone(offset int) *exit.Exit {
-// 	timezone := model.NewTimeZoneInfo(offset)
-// 	service.TimeZone.SaveTimeZone(p.W, p.R, timezone)
-// 	return exit.RenderText(timezone.String())
-// }
+// TODO: Is this right?
+// Usages: /auth/login:logout?refer=http.....
+func (p *Login) Onlogout() *exit.Exit {
+	fmt.Println("Service logout")
+	err := service.Auth.OAuthDeleteToken(p.W, p.R)
+	if nil != err {
+		return exit.Error(err)
+	}
+	url := route.GetRefererFromURL(p.R)
+	return exit.RedirectFirstValid(url, "/")
+}

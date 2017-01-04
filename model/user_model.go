@@ -1,7 +1,8 @@
-// latest-tag: Time-stamp: <[user_model.go] Elivoa @ Sunday, 2016-12-04 19:38:22>
+// latest-tag: Time-stamp: <[user_model.go] Elivoa @ Thursday, 2016-12-15 16:59:01>
 package model
 
 import (
+	"golang.org/x/oauth2"
 	"strings"
 	"time"
 )
@@ -26,17 +27,6 @@ type User struct {
 	Store      int       // store
 	CreateTime time.Time // 试试看，是否可作为入职时间。
 	UpdateTime time.Time
-}
-
-// UserToken
-type UserToken struct {
-	Id       int64
-	Name     string
-	Username string
-	Password string
-	Roles    []string // roles, do not support multi roles now.
-	Store    int      // no use in syd
-	// TODO: timeout?
 }
 
 func (t *UserToken) Role() string {
@@ -75,4 +65,22 @@ func (u *User) ToUserToken() *UserToken {
 		userToken.Roles = append(userToken.Roles, strings.ToLower(strings.TrimSpace(r)))
 	}
 	return userToken
+}
+
+// --------------------------------------------------------------------------------
+// UserToken
+type UserToken struct {
+	Id       int64    `json:"id"`
+	Name     string   `json:"name"`
+	Username string   `json:"-"`
+	Password string   `json:"-"`
+	Roles    []string `json:"roles,omitempty" ` // roles, do not support multi roles now.
+	Store    int      `json:"-"`                // no use in syd
+
+	Token *oauth2.Token `json:"token" ` // oauth2 token
+}
+
+func (t *UserToken) RolesInt() Roles {
+	// TODO return test data.
+	return ROLE_LOGIN | ROLE_Secret
 }

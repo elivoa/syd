@@ -26,15 +26,15 @@ var (
 var (
 
 	// Fundamental Serivces
-	// Const = NewCosntService()
-	User = &UserService{logs: logs.Get("SERVICE:USER:LoginCheck")}
-	Auth = NewAuthService()
+	Const = NewCosntService()
+	User  = &UserService{logs: logs.Get("SERVICE:USER:LoginCheck")}
+	Auth  = NewAuthService()
 
 	// basic logic services
-	// Order          = new(OrderService)
+	Order = new(OrderService)
 	// Account        = new(AccountService)
-	// Person         = new(PersonService)
-	// Product        = new(ProductService)
+	Person  = new(PersonService)
+	Product = new(ProductService)
 	// Inventory      = new(InventoryService)      // 入库
 	// InventoryGroup = new(InventoryGroupService) // 入库组
 	// InventoryTrack = new(InventoryTrackService) // Inventory Track
