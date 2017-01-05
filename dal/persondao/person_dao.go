@@ -1,7 +1,7 @@
 /*
   Data Access Object for person module.
 
-  Time-stamp: <[person_dao.go] Elivoa @ Monday, 2016-12-19 12:57:55>
+  Time-stamp: <[person_dao.go] Elivoa @ Thursday, 2017-01-05 13:19:55>
 
   Note: This is the latest Template for dao functions.
 
@@ -10,6 +10,7 @@ package persondao
 
 import (
 	"database/sql"
+	"github.com/elivoa/got/config"
 	"github.com/elivoa/got/db"
 	"github.com/elivoa/syd/model"
 	_ "github.com/go-sql-driver/mysql"
@@ -127,6 +128,16 @@ func Create(person *model.Person) error {
 	liid, err := res.LastInsertId()
 	person.Id = int(liid)
 	return nil
+}
+
+func List(parser *db.QueryParser) ([]*model.Person, error) {
+	parser.SetEntity(em) // set entity manager into query parser.
+	parser.Reset()       // to prevent if parser is used before. TODO:Is this necessary?
+	// append default behavore.
+	parser.DefaultOrderBy("createtime", db.DESC)
+	parser.DefaultLimit(0, config.LIST_PAGE_SIZE)
+	parser.Select()
+	return _list(parser)
 }
 
 // ________________________________________________________________________________

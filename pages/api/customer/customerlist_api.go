@@ -9,7 +9,7 @@ import (
 	"github.com/elivoa/syd/tools"
 )
 
-type ProductApi struct {
+type Customer struct {
 	core.Page
 	UserToken *model.UserToken
 
@@ -23,35 +23,44 @@ type ProductApi struct {
 	Order   string `query:"order"`
 }
 
-func (p *ProductApi) Activate() {
+func (p *Customer) Activate() {
 	// allow cross domain access.
 	tools.HttpAllowCrossDomainAccess(p.W)
 	// TODO Other light-weight validation.
 }
 
-func (p *ProductApi) SetupRender() *exit.Exit {
+func (p *Customer) SetupRender() *exit.Exit {
 	return nil
 }
 
 // Required params: tab, current, pageItems
-func (p *ProductApi) Onlist() *exit.Exit {
-	products, total, page, items, err := service.Product.GetProducts(model.Params{
-		"first-letter": p.Tab,
+func (p *Customer) OnlistCustomer() *exit.Exit {
+	return p.listPerson("customer")
+}
+
+func (p *Customer) OnlistFactory() *exit.Exit {
+	return p.listPerson("factory")
+}
+
+func (p *Customer) listPerson(personType string) *exit.Exit {
+	persons, total, page, items, err := service.Person.GetPersons(model.Params{
+		// ignore tab, use as
+		"type":         personType,
 		"current":      p.Current, // current page
 		"page_items":   p.PageItems,
 		"return_total": true,
 		"orderby":      p.OrderBy,
 		"order":        p.Order,
-	}, service.WITH_PRODUCT_DETAIL|service.WITH_PRODUCT_INVENTORY)
+	}, service.WITH_NONE)
 	if err != nil {
 		// TODO return error
 		panic(err)
 	}
 
 	// filter out values.
-	filteroutProductListJson(products)
+	filterCustomerListJson(persons)
 
-	resp := model.NewJsonResponse(products)
+	resp := model.NewJsonResponse(persons)
 	resp.Total = total
 	resp.Current = page
 	resp.Items = items
@@ -59,9 +68,7 @@ func (p *ProductApi) Onlist() *exit.Exit {
 }
 
 // Required params: id
-func (p *ProductApi) Onget() *exit.Exit {
-	// p.fixPagerParameters()
-
+func (p *Customer) Onget() *exit.Exit {
 	// process Tab.
 	product, err := service.Product.GetFullProduct(p.Id)
 	// products, total, page, items, err := service.Product.GetProducts(model.Params{
@@ -85,7 +92,7 @@ func (p *ProductApi) Onget() *exit.Exit {
 	return exit.MarshalJson(product)
 }
 
-func (p *ProductApi) fixPagerParameters() {
+func (p *Customer) fixPagerParameters() {
 	// fix the pagers
 	if p.PageItems <= 0 {
 		p.PageItems = config.LIST_PAGE_SIZE // TODO default pager number. Config this.
@@ -96,17 +103,10 @@ func (p *ProductApi) fixPagerParameters() {
 }
 
 // remove unnecessary values to generate json.
-func filteroutProductListJson(products []*model.Product) {
-	if products != nil && len(products) > 0 {
-		//		empty_order_detail := []*model.OrderDetail{}
-		for _, m := range products {
+func filterCustomerListJson(persons []*model.Person) {
+	if persons != nil && len(persons) > 0 {
+		for _, m := range persons {
 			if nil != m {
-				m.Brand = ""
-				m.Supplier = 0
-				m.FactoryPrice = 0
-				m.ShelfNo = ""
-				m.Capital = ""
-				m.CreateTime = nil
 				m.UpdateTime = nil
 			}
 		}

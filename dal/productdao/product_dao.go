@@ -56,6 +56,17 @@ func _one(query *db.QueryParser) (*model.Product, error) {
 	return nil, nil
 }
 
+func List(parser *db.QueryParser) ([]*model.Product, error) {
+	// var query *db.QueryParser
+	parser.SetEntity(em) // set entity manager into query parser.
+	parser.Reset()       // to prevent if parser is used before. TODO:Is this necessary?
+	// append default behavore.
+	parser.DefaultOrderBy("createtime", db.DESC)
+	parser.DefaultLimit(0, config.LIST_PAGE_SIZE)
+	parser.Select()
+	return _list(parser)
+}
+
 func _list(query *db.QueryParser) ([]*model.Product, error) {
 	models := make([]*model.Product, 0)
 	if err := query.Query(
@@ -80,17 +91,6 @@ func _list(query *db.QueryParser) ([]*model.Product, error) {
 
 func Get(id int) (*model.Product, error) {
 	return _one(em.Select().Where(em.PK, id))
-}
-
-func List(parser *db.QueryParser) ([]*model.Product, error) {
-	// var query *db.QueryParser
-	parser.SetEntity(em) // set entity manager into query parser.
-	parser.Reset()       // to prevent if parser is used before. TODO:Is this necessary?
-	// append default behavore.
-	parser.DefaultOrderBy("createtime", db.DESC)
-	parser.DefaultLimit(0, config.LIST_PAGE_SIZE)
-	parser.Select()
-	return _list(parser)
 }
 
 // func ListAll() ([]*model.Product, error) {

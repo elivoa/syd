@@ -27,17 +27,20 @@ func (s *ProductService) EntityManager() *db.Entity {
 //   "first-letter":  -- order.status
 //   "current":       -- 分页用，当前页
 //   "page_items":    -- 分页用，每页条目数
-//   "return_total": -- 是否需要计算满足条件的所有数据数量。
+//   "return_total":  -- 是否需要计算满足条件的所有数据数量。
+//   "orderby":       -- order by "field"
+//   "order":         -- asc/desc
 // }
 // withs: -- 数据集中还需要返回的数量.
 // TODO make this fucntion powerful.
 func (s *ProductService) GetProducts(params model.Params, withs Withs) (
 	products []*model.Product, total, page, items int, err error) {
 
-	// fetch data
+	// 1. create queryparser.
 	var parser = s.EntityManager().NewQueryParser()
 	parser.Where()
 
+	// 2. append where conditions.
 	firstLetter, ok := params["first-letter"]
 	if ok {
 		if firstLetter != "all" {
@@ -45,7 +48,7 @@ func (s *ProductService) GetProducts(params model.Params, withs Withs) (
 		}
 	}
 
-	// get total
+	// 3. get total if required.
 	if params.IsTrue("return_total") {
 		total, err = parser.Count()
 		if err != nil {
@@ -53,7 +56,20 @@ func (s *ProductService) GetProducts(params model.Params, withs Withs) (
 		}
 	}
 
-	// 2. get order list.
+	// 4. order or something else.
+	orderby := params.String("orderby")
+	if orderby != "" {
+		if err = validate_orderby(orderby, "id", "create_time", "createtime"); err != nil {
+			return
+		}
+		order := params.String("order")
+		if err = validate_order(order); err != nil {
+			return
+		}
+		parser.OrderBy(orderby, order)
+	}
+
+	// 5. add limit/pager info.
 	page = params.Int("current")
 	items = params.Int("page_items")
 	if page <= 0 {
@@ -67,6 +83,8 @@ func (s *ProductService) GetProducts(params model.Params, withs Withs) (
 		}
 	}
 	parser.Limit(page*items, items) // pager
+
+	// 6. fetch data.
 	products, err = s.List(parser, withs)
 	return
 }

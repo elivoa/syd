@@ -48,3 +48,10 @@ func (p Params) Int(key string) int {
 	}
 	return 0
 }
+
+func (p Params) String(key string) string {
+	if value, ok := p[key]; ok {
+		return value.(string)
+	}
+	return ""
+}
