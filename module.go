@@ -2,6 +2,9 @@ package syd
 
 import (
 	"encoding/gob"
+	"os"
+	"reflect"
+
 	"github.com/elivoa/got/config"
 	"github.com/elivoa/got/core"
 	"github.com/elivoa/got/core/exception"
@@ -9,16 +12,20 @@ import (
 	"github.com/elivoa/got/utils"
 	"github.com/elivoa/gxl"
 	"github.com/elivoa/syd/model"
-	"reflect"
 )
+
+var workPath, _ = os.Getwd()
+var curr = utils.CurrentBasePath()
 
 // TODO: think out a better way to register this.
 var Module = &core.Module{
-	Name:            "syd server", // Don't use this. It's only used to display.
-	Version:         "2.0",        // TODO: used to add to assets path to disable cache.
-	VarName:         "Module",     // Variable name.
-	BasePath:        utils.CurrentBasePath(),
-	PackagePath:     "github.com/elivoa/syd", // package name used anywhere to locate important things.
+	Name:     "syd server", // Don't use this. It's only used to display.
+	Version:  "2.0",        // TODO: used to add to assets path to disable cache.
+	VarName:  "Module",     // Variable name.
+	BasePath: curr,
+	// BasePath:       filepath.Join(workPath, "../syd"), // 来吧，这是工程根目录
+	// PackagePath:     "github.com/elivoa/syd",
+	PackageName:     "github.com/elivoa/syd",
 	Description:     "SYD Platform Server side. --Secure api.",
 	IsStartupModule: true, // Application only accept one startup module for now.
 	Register: func() {
