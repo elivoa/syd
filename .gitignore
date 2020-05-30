@@ -3,3 +3,6 @@ generated r
 generated/main
 
 generated/main.go
+
+go.sum
+go.sum*.tmp
